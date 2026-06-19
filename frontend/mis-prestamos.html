@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioApp - Mis Préstamos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <h1>📚 BiblioApp</h1>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="index.html">Catálogo</a></li>
+                <li><a href="mis-prestamos.html">Mis Préstamos</a></li>
+                <li><a href="admin/libros.html" id="admin-link" style="display:none;">Admin</a></li>
+                <li><button id="logout-btn" class="btn btn-danger">Cerrar Sesión</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="prestamos-section">
+            <h2>Mis Préstamos</h2>
+            <div id="prestamos-container" class="prestamos-table">
+                <p>Cargando préstamos...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/prestamos.js"></script>
+</body>
+</html>
