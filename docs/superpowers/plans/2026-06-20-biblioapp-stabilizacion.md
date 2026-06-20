@@ -1077,9 +1077,11 @@ git commit -m "chore: complete biblioapp stabilization"
 - `node --check frontend/js/prestamos.js`
 - `rg -n "innerHTML|onclick=" frontend/js` returned no matches
 - `git diff --check`
+- `python -m pytest tests/ -v` passed with 31 tests
+- `python -m pytest tests/ -v --cov=app --cov-report=term-missing` passed with 88% total coverage
 
-**Blocked:**
-- `python -m pytest tests/ -v`
-- `python -m pytest tests/ -v --cov=app --cov-report=term-missing`
-
-Both Python commands failed because this environment cannot access `python.exe`.
+**Resolved after Python installation:**
+- Configuration parsing now accepts comma-separated `ALLOWED_ORIGINS`.
+- `DEBUG=release` is treated as production mode (`False`).
+- Extra seed-only `.env` values such as `ADMIN_EMAIL` and `ADMIN_PASSWORD` are ignored by runtime settings.
+- `bcrypt` is pinned below 5 for compatibility with `passlib`.

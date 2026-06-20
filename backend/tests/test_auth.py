@@ -56,4 +56,4 @@ def test_login_credenciales_invalidas(client: TestClient, usuario_lector):
 
 def test_endpoint_privado_sin_token(client: TestClient):
     response = client.get("/api/v1/prestamos/mis-prestamos")
-    assert response.status_code == 403
+    assert response.status_code == 401

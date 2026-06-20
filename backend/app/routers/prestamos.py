@@ -14,6 +14,21 @@ from app.models.usuario import Usuario
 router = APIRouter()
 
 
+def build_prestamo_response(prestamo) -> PrestamoResponse:
+    vencido = prestamo_service.es_prestamo_vencido(prestamo)
+    return PrestamoResponse(
+        id=prestamo.id,
+        usuario_id=prestamo.usuario_id,
+        libro_id=prestamo.libro_id,
+        libro=prestamo.libro,
+        fecha_prestamo=prestamo.fecha_prestamo,
+        fecha_devolucion_esperada=prestamo.fecha_devolucion_esperada,
+        fecha_devolucion_real=prestamo.fecha_devolucion_real,
+        estado=prestamo.estado,
+        vencido=vencido,
+    )
+
+
 @router.post("", response_model=PrestamoResponse, status_code=201)
 def solicitar_prestamo(
     request: PrestamoCreate,
@@ -23,10 +38,7 @@ def solicitar_prestamo(
     prestamo = prestamo_service.solicitar_prestamo(
         db, current_user.id, request.libro_id
     )
-    vencido = prestamo_service.es_prestamo_vencido(prestamo)
-    return PrestamoResponse(
-        **{**prestamo.__dict__, "vencido": vencido}
-    )
+    return build_prestamo_response(prestamo)
 
 
 @router.put("/{id}/devolver", response_model=PrestamoResponse)
@@ -38,10 +50,7 @@ def registrar_devolucion(
     prestamo = prestamo_service.registrar_devolucion(
         db, id, current_user.id, current_user.role
     )
-    vencido = prestamo_service.es_prestamo_vencido(prestamo)
-    return PrestamoResponse(
-        **{**prestamo.__dict__, "vencido": vencido}
-    )
+    return build_prestamo_response(prestamo)
 
 
 @router.get("/mis-prestamos", response_model=PrestamosListResponse)
@@ -58,12 +67,7 @@ def obtener_mis_prestamos(
 
     items_response = []
     for item in items:
-        vencido = prestamo_service.es_prestamo_vencido(item)
-        items_response.append(
-            PrestamoResponse(
-                **{**item.__dict__, "vencido": vencido}
-            )
-        )
+        items_response.append(build_prestamo_response(item))
 
     return PrestamosListResponse(
         total=total, limit=limit, offset=offset, items=items_response
@@ -86,12 +90,7 @@ def obtener_prestamos(
 
     items_response = []
     for item in items:
-        vencido = prestamo_service.es_prestamo_vencido(item)
-        items_response.append(
-            PrestamoResponse(
-                **{**item.__dict__, "vencido": vencido}
-            )
-        )
+        items_response.append(build_prestamo_response(item))
 
     return PrestamosListResponse(
         total=total, limit=limit, offset=offset, items=items_response
