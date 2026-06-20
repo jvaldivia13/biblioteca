@@ -35,7 +35,9 @@ def registrar_devolucion(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_user),
 ):
-    prestamo = prestamo_service.registrar_devolucion(db, id, current_user.id)
+    prestamo = prestamo_service.registrar_devolucion(
+        db, id, current_user.id, current_user.role
+    )
     vencido = prestamo_service.es_prestamo_vencido(prestamo)
     return PrestamoResponse(
         **{**prestamo.__dict__, "vencido": vencido}

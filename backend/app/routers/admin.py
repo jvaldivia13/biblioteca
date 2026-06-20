@@ -41,7 +41,7 @@ def cambiar_estado(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(require_admin),
 ):
-    return admin_service.cambiar_estado_usuario(db, id, request.activo)
+    return admin_service.cambiar_estado_usuario(db, id, request.activo, current_user.id)
 
 
 @router.put("/usuarios/{id}/rol", response_model=UsuarioResponse)
@@ -51,4 +51,4 @@ def cambiar_rol(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(require_admin),
 ):
-    return admin_service.cambiar_rol_usuario(db, id, request.role)
+    return admin_service.cambiar_rol_usuario(db, id, request.role, current_user.id)

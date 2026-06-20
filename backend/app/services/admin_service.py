@@ -43,19 +43,29 @@ def obtener_usuarios(db: Session, limit: int = 20, offset: int = 0):
     return usuario_repo.get_all_usuarios(db, limit, offset)
 
 
-def cambiar_estado_usuario(db: Session, usuario_id: int, activo: bool) -> Usuario:
+def cambiar_estado_usuario(
+    db: Session, usuario_id: int, activo: bool, current_user_id: int
+) -> Usuario:
     usuario = usuario_repo.get_usuario_by_id(db, usuario_id)
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    if usuario.id == current_user_id and not activo:
+        raise HTTPException(
+            status_code=409, detail="El admin no puede desactivar su propia cuenta"
+        )
+
     return usuario_repo.update_usuario_estado(db, usuario_id, activo)
 
 
-def cambiar_rol_usuario(db: Session, usuario_id: int, role: str) -> Usuario:
+def cambiar_rol_usuario(
+    db: Session, usuario_id: int, role: str, current_user_id: int
+) -> Usuario:
     usuario = usuario_repo.get_usuario_by_id(db, usuario_id)
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-    if usuario.role == "admin" and role != "admin":
+    if usuario.id == current_user_id and usuario.role == "admin" and role != "admin":
         raise HTTPException(
             status_code=409, detail="El admin no puede quitarse su propio rol"
         )

@@ -11,7 +11,9 @@ async function loadMisPrestamos() {
         console.error("Error:", error);
         const container = document.getElementById("prestamos-container");
         if (container) {
-            container.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            clearChildren(container);
+            const message = appendText(container, "p", `Error: ${error.message}`);
+            message.style.color = "red";
         }
     }
 }
@@ -20,55 +22,63 @@ function displayPrestamos(prestamos) {
     const container = document.getElementById("prestamos-container");
     if (!container) return;
 
+    clearChildren(container);
+
     if (prestamos.length === 0) {
-        container.innerHTML = "<p>No tienes préstamos.</p>";
+        appendText(container, "p", "No tienes prestamos.");
         return;
     }
 
-    const html = `
-        <table>
-            <thead>
-                <tr>
-                    <th>Libro</th>
-                    <th>Autor</th>
-                    <th>Fecha Préstamo</th>
-                    <th>Vencimiento</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${prestamos
-                    .map(
-                        (p) => `
-                    <tr>
-                        <td>${p.libro.titulo}</td>
-                        <td>${p.libro.autor}</td>
-                        <td>${p.fecha_prestamo}</td>
-                        <td>${p.fecha_devolucion_esperada}</td>
-                        <td>
-                            ${
-                                p.estado === "activo"
-                                    ? `<span class="badge ${p.vencido ? "badge-danger" : "badge-success"}">${p.vencido ? "Vencido" : "Activo"}</span>`
-                                    : `<span class="badge badge-success">Devuelto</span>`
-                            }
-                        </td>
-                        <td>
-                            ${p.estado === "activo" ? `<button class="btn btn-primary" onclick="devolverPrestamo(${p.id})">Devolver</button>` : "—"}
-                        </td>
-                    </tr>
-                `
-                    )
-                    .join("")}
-            </tbody>
-        </table>
-    `;
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    ["Libro", "Autor", "Fecha Prestamo", "Vencimiento", "Estado", "Acciones"].forEach(
+        (header) => appendText(headRow, "th", header)
+    );
+    thead.appendChild(headRow);
+    table.appendChild(thead);
 
-    container.innerHTML = html;
+    const tbody = document.createElement("tbody");
+    prestamos.forEach((prestamo) => {
+        const row = document.createElement("tr");
+        appendText(row, "td", prestamo.libro.titulo);
+        appendText(row, "td", prestamo.libro.autor);
+        appendText(row, "td", prestamo.fecha_prestamo);
+        appendText(row, "td", prestamo.fecha_devolucion_esperada);
+
+        const estadoCell = document.createElement("td");
+        appendText(
+            estadoCell,
+            "span",
+            prestamo.estado === "activo"
+                ? prestamo.vencido
+                    ? "Vencido"
+                    : "Activo"
+                : "Devuelto",
+            prestamo.estado === "activo" && prestamo.vencido
+                ? "badge badge-danger"
+                : "badge badge-success"
+        );
+        row.appendChild(estadoCell);
+
+        const actions = document.createElement("td");
+        if (prestamo.estado === "activo") {
+            appendButton(actions, "Devolver", "btn btn-primary", () =>
+                devolverPrestamo(prestamo.id)
+            );
+        } else {
+            appendText(actions, "span", "-");
+        }
+        row.appendChild(actions);
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+    container.appendChild(table);
 }
 
 async function devolverPrestamo(prestamoId) {
-    if (!confirm("¿Deseas registrar la devolución de este préstamo?")) {
+    if (!confirm("Deseas registrar la devolucion de este prestamo?")) {
         return;
     }
 
@@ -76,7 +86,7 @@ async function devolverPrestamo(prestamoId) {
         await apiFetch(`/prestamos/${prestamoId}/devolver`, {
             method: "PUT",
         });
-        alert("Devolución registrada correctamente");
+        alert("Devolucion registrada correctamente");
         loadMisPrestamos();
     } catch (error) {
         alert("Error: " + error.message);

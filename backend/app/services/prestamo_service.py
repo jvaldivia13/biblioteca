@@ -27,7 +27,9 @@ def solicitar_prestamo(db: Session, usuario_id: int, libro_id: int) -> Prestamo:
     return prestamo_repo.create_prestamo(db, nuevo_prestamo)
 
 
-def registrar_devolucion(db: Session, prestamo_id: int, usuario_id: int) -> Prestamo:
+def registrar_devolucion(
+    db: Session, prestamo_id: int, usuario_id: int, usuario_role: str
+) -> Prestamo:
     prestamo = prestamo_repo.get_prestamo_by_id(db, prestamo_id)
     if not prestamo:
         raise HTTPException(status_code=404, detail="Préstamo no encontrado")
@@ -35,7 +37,7 @@ def registrar_devolucion(db: Session, prestamo_id: int, usuario_id: int) -> Pres
     if prestamo.estado != "activo":
         raise HTTPException(status_code=409, detail="El préstamo ya fue devuelto")
 
-    if prestamo.usuario_id != usuario_id:
+    if prestamo.usuario_id != usuario_id and usuario_role != "admin":
         raise HTTPException(
             status_code=403, detail="No puedes devolver el préstamo de otro usuario"
         )

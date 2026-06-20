@@ -1,3 +1,8 @@
+import os
+
+os.environ.setdefault("JWT_SECRET_KEY", "test-secret-key-for-biblioapp")
+os.environ.setdefault("DATABASE_URL", "sqlite:///./test.db")
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine

@@ -52,6 +52,11 @@ cp .env.example .env
 # Edita .env con tus valores
 ```
 
+En Windows PowerShell:
+```powershell
+Copy-Item .env.example .env
+```
+
 4. Ejecuta el servidor:
 ```bash
 uvicorn app.main:app --reload
@@ -93,14 +98,14 @@ Ejecuta los tests con pytest:
 
 ```bash
 cd backend
-pip install pytest pytest-asyncio httpx
-pytest tests/ -v
+pip install -r requirements-dev.txt
+python -m pytest tests/ -v
 ```
 
 Para ver el reporte de cobertura:
 
 ```bash
-pytest tests/ -v --cov=app --cov-report=html
+python -m pytest tests/ -v --cov=app --cov-report=html
 ```
 
 ## API Documentation

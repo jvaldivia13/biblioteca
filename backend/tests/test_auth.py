@@ -2,6 +2,12 @@ import pytest
 from fastapi.testclient import TestClient
 
 
+def test_app_has_test_jwt_secret_configured(client: TestClient):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json()["message"] == "BiblioApp API v1.0"
+
+
 def test_registro_exitoso(client: TestClient):
     response = client.post(
         "/api/v1/auth/register",

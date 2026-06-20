@@ -20,7 +20,9 @@ async function loadLibros(offset = 0) {
         console.error("Error:", error);
         const container = document.getElementById("books-container");
         if (container) {
-            container.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            clearChildren(container);
+            const message = appendText(container, "p", `Error: ${error.message}`);
+            message.style.color = "red";
         }
     }
 }
@@ -29,60 +31,90 @@ function displayLibros(libros) {
     const container = document.getElementById("books-container");
     if (!container) return;
 
+    clearChildren(container);
+
     if (libros.length === 0) {
-        container.innerHTML = "<p>No se encontraron libros.</p>";
+        appendText(container, "p", "No se encontraron libros.");
         return;
     }
 
-    container.innerHTML = libros
-        .map(
-            (libro) => `
-        <div class="book-card">
-            <div class="book-card-content">
-                <h3>${libro.titulo}</h3>
-                <p><strong>Autor:</strong> ${libro.autor}</p>
-                <p><strong>Categoría:</strong> ${libro.categoria}</p>
-                ${libro.isbn ? `<p><strong>ISBN:</strong> ${libro.isbn}</p>` : ""}
-                ${libro.anio_publicacion ? `<p><strong>Año:</strong> ${libro.anio_publicacion}</p>` : ""}
-                <div class="disponibles">
-                    ${libro.disponibles > 0 ? `${libro.disponibles} disponible${libro.disponibles !== 1 ? 's' : ''}` : "No disponible"}
-                </div>
-                ${libro.descripcion ? `<p>${libro.descripcion}</p>` : ""}
-                <div class="actions">
-                    ${libro.disponibles > 0 && isLoggedIn() ? `<button class="btn btn-success" onclick="requestPrestamoFromCard(${libro.id})">Solicitar</button>` : ""}
-                </div>
-            </div>
-        </div>
-    `
-        )
-        .join("");
+    libros.forEach((libro) => {
+        const card = document.createElement("div");
+        card.className = "book-card";
+
+        const content = document.createElement("div");
+        content.className = "book-card-content";
+        card.appendChild(content);
+
+        appendText(content, "h3", libro.titulo);
+        appendText(content, "p", `Autor: ${libro.autor}`);
+        appendText(content, "p", `Categoria: ${libro.categoria}`);
+        if (libro.isbn) appendText(content, "p", `ISBN: ${libro.isbn}`);
+        if (libro.anio_publicacion) {
+            appendText(content, "p", `Anio: ${libro.anio_publicacion}`);
+        }
+
+        appendText(
+            content,
+            "div",
+            libro.disponibles > 0
+                ? `${libro.disponibles} disponible${libro.disponibles !== 1 ? "s" : ""}`
+                : "No disponible",
+            "disponibles"
+        );
+
+        if (libro.descripcion) appendText(content, "p", libro.descripcion);
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        content.appendChild(actions);
+
+        if (libro.disponibles > 0 && isLoggedIn()) {
+            appendButton(actions, "Solicitar", "btn btn-success", () =>
+                requestPrestamoFromCard(libro.id)
+            );
+        }
+
+        container.appendChild(card);
+    });
 }
 
 function setupPagination(total, currentOffset) {
     const container = document.getElementById("pagination");
     if (!container) return;
 
+    clearChildren(container);
+
     const totalPages = Math.ceil(total / limit);
     const currentPageNum = Math.floor(currentOffset / limit);
 
-    let html = "";
-
     if (currentPageNum > 0) {
-        html += `<button onclick="loadLibros(0)">Primera</button>`;
-        html += `<button onclick="loadLibros(${(currentPageNum - 1) * limit})">Anterior</button>`;
+        appendButton(container, "Primera", "", () => loadLibros(0));
+        appendButton(container, "Anterior", "", () =>
+            loadLibros((currentPageNum - 1) * limit)
+        );
     }
 
-    for (let i = Math.max(0, currentPageNum - 1); i <= Math.min(totalPages - 1, currentPageNum + 1); i++) {
+    for (
+        let i = Math.max(0, currentPageNum - 1);
+        i <= Math.min(totalPages - 1, currentPageNum + 1);
+        i++
+    ) {
         const offset = i * limit;
-        html += `<button onclick="loadLibros(${offset})" ${i === currentPageNum ? "disabled" : ""}>${i + 1}</button>`;
+        const button = appendButton(container, String(i + 1), "", () =>
+            loadLibros(offset)
+        );
+        button.disabled = i === currentPageNum;
     }
 
     if (currentPageNum < totalPages - 1) {
-        html += `<button onclick="loadLibros(${(currentPageNum + 1) * limit})">Siguiente</button>`;
-        html += `<button onclick="loadLibros(${(totalPages - 1) * limit})">Última</button>`;
+        appendButton(container, "Siguiente", "", () =>
+            loadLibros((currentPageNum + 1) * limit)
+        );
+        appendButton(container, "Ultima", "", () =>
+            loadLibros((totalPages - 1) * limit)
+        );
     }
-
-    container.innerHTML = html;
 }
 
 async function requestPrestamoFromCard(libroId) {
@@ -96,7 +128,7 @@ async function requestPrestamoFromCard(libroId) {
             method: "POST",
             body: JSON.stringify({ libro_id: libroId }),
         });
-        alert("Préstamo solicitado correctamente");
+        alert("Prestamo solicitado correctamente");
         loadLibros(0);
     } catch (error) {
         alert("Error: " + error.message);

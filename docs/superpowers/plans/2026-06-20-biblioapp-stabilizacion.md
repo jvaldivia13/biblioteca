@@ -1062,3 +1062,24 @@ git commit -m "chore: complete biblioapp stabilization"
 
 **Type consistency:** Role values use `Literal["admin", "lector"]`; service and router signatures both pass `current_user.id` where self-protection is required; loan return signatures consistently use `usuario_role`.
 
+---
+
+## Execution Status - 2026-06-20
+
+**Applied:** Tasks 1 through 7 were implemented in branch `biblioapp-stabilizacion`.
+
+**Additional hardening:** `frontend/js/prestamos.js` was also migrated away from `innerHTML` because it rendered backend-provided loan/book data.
+
+**Verified:**
+- `node --check frontend/js/dom.js`
+- `node --check frontend/js/libros.js`
+- `node --check frontend/js/admin.js`
+- `node --check frontend/js/prestamos.js`
+- `rg -n "innerHTML|onclick=" frontend/js` returned no matches
+- `git diff --check`
+
+**Blocked:**
+- `python -m pytest tests/ -v`
+- `python -m pytest tests/ -v --cov=app --cov-report=term-missing`
+
+Both Python commands failed because this environment cannot access `python.exe`.

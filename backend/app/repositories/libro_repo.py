@@ -34,7 +34,7 @@ def search_libros(
         )
 
     if categoria:
-        query = query.filter(Libro.categoria.ilike(categoria))
+        query = query.filter(func.lower(Libro.categoria) == categoria.lower())
 
     total = query.count()
     items = query.offset(offset).limit(limit).all()
@@ -46,8 +46,7 @@ def update_libro(db: Session, libro_id: int, data: dict) -> Libro | None:
     libro = db.query(Libro).filter(Libro.id == libro_id).first()
     if libro:
         for key, value in data.items():
-            if value is not None:
-                setattr(libro, key, value)
+            setattr(libro, key, value)
         db.commit()
         db.refresh(libro)
     return libro

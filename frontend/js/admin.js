@@ -11,7 +11,9 @@ async function loadAdminLibros() {
         console.error("Error:", error);
         const container = document.getElementById("libros-container");
         if (container) {
-            container.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+            clearChildren(container);
+            const message = appendText(container, "p", `Error: ${error.message}`);
+            message.style.color = "red";
         }
     }
 }
@@ -20,40 +22,35 @@ function displayAdminLibros(libros) {
     const container = document.getElementById("libros-container");
     if (!container) return;
 
-    const html = `
-        <table>
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Categoría</th>
-                    <th>Stock Total</th>
-                    <th>Disponibles</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${libros
-                    .map(
-                        (l) => `
-                    <tr>
-                        <td>${l.titulo}</td>
-                        <td>${l.autor}</td>
-                        <td>${l.categoria}</td>
-                        <td>${l.stock_total}</td>
-                        <td>${l.disponibles}</td>
-                        <td>
-                            <button class="btn btn-danger" onclick="confirmarEliminarLibro(${l.id})">Eliminar</button>
-                        </td>
-                    </tr>
-                `
-                    )
-                    .join("")}
-            </tbody>
-        </table>
-    `;
+    clearChildren(container);
 
-    container.innerHTML = html;
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    ["Titulo", "Autor", "Categoria", "Stock Total", "Disponibles", "Acciones"].forEach(
+        (header) => appendText(headRow, "th", header)
+    );
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    libros.forEach((libro) => {
+        const row = document.createElement("tr");
+        appendText(row, "td", libro.titulo);
+        appendText(row, "td", libro.autor);
+        appendText(row, "td", libro.categoria);
+        appendText(row, "td", String(libro.stock_total));
+        appendText(row, "td", String(libro.disponibles));
+
+        const actions = document.createElement("td");
+        appendButton(actions, "Eliminar", "btn btn-danger", () =>
+            confirmarEliminarLibro(libro.id)
+        );
+        row.appendChild(actions);
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+    container.appendChild(table);
 }
 
 async function crearLibro(e) {
@@ -64,7 +61,8 @@ async function crearLibro(e) {
         autor: document.getElementById("autor").value,
         isbn: document.getElementById("isbn").value || undefined,
         categoria: document.getElementById("categoria").value,
-        anio_publicacion: parseInt(document.getElementById("anio_publicacion").value) || undefined,
+        anio_publicacion:
+            parseInt(document.getElementById("anio_publicacion").value) || undefined,
         stock_total: parseInt(document.getElementById("stock_total").value) || 1,
         descripcion: document.getElementById("descripcion").value || undefined,
     };
@@ -84,7 +82,7 @@ async function crearLibro(e) {
 }
 
 async function confirmarEliminarLibro(libroId) {
-    if (!confirm("¿Estás seguro de que deseas eliminar este libro?")) {
+    if (!confirm("Estas seguro de que deseas eliminar este libro?")) {
         return;
     }
 

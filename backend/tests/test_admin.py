@@ -54,3 +54,61 @@ def test_no_admin_rechaza_admin_endpoint(client: TestClient, usuario_lector):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 403
+
+
+def auth_header(usuario):
+    token = create_access_token(
+        {"user_id": usuario.id, "email": usuario.email, "role": usuario.role}
+    )
+    return {"Authorization": f"Bearer {token}"}
+
+
+def test_admin_rechaza_rol_invalido(client: TestClient, usuario_admin, usuario_lector):
+    response = client.put(
+        f"/api/v1/admin/usuarios/{usuario_lector.id}/rol",
+        json={"role": "superadmin"},
+        headers=auth_header(usuario_admin),
+    )
+    assert response.status_code == 422
+
+
+def test_admin_no_puede_quitarse_su_propio_rol(client: TestClient, usuario_admin):
+    response = client.put(
+        f"/api/v1/admin/usuarios/{usuario_admin.id}/rol",
+        json={"role": "lector"},
+        headers=auth_header(usuario_admin),
+    )
+    assert response.status_code == 409
+
+
+def test_admin_puede_cambiar_rol_de_otro_admin(client: TestClient, db, usuario_admin):
+    from app.models.usuario import Usuario
+    from app.utils.password import hash_password
+
+    otro_admin = Usuario(
+        nombre="Otro Admin",
+        email="otro-admin@test.com",
+        password_hash=hash_password("Admin123!"),
+        role="admin",
+        activo=True,
+    )
+    db.add(otro_admin)
+    db.commit()
+    db.refresh(otro_admin)
+
+    response = client.put(
+        f"/api/v1/admin/usuarios/{otro_admin.id}/rol",
+        json={"role": "lector"},
+        headers=auth_header(usuario_admin),
+    )
+    assert response.status_code == 200
+    assert response.json()["role"] == "lector"
+
+
+def test_admin_no_puede_desactivarse_a_si_mismo(client: TestClient, usuario_admin):
+    response = client.put(
+        f"/api/v1/admin/usuarios/{usuario_admin.id}/estado",
+        json={"activo": False},
+        headers=auth_header(usuario_admin),
+    )
+    assert response.status_code == 409
