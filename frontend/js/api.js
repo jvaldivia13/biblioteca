@@ -1,5 +1,6 @@
-const API_BASE = window.location.hostname === "localhost"
-    ? "http://localhost:8000/api/v1"
+const isLocalHost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+const API_BASE = isLocalHost
+    ? "http://127.0.0.1:8000/api/v1"
     : "https://biblioapp-api.onrender.com/api/v1";
 
 async function apiFetch(endpoint, options = {}) {

@@ -1,10 +1,16 @@
 import json
 
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore",
+        populate_by_name=True,
+    )
+
     database_url: str = "sqlite:///./biblioapp.db"
     jwt_secret_key: str
     jwt_algorithm: str = "HS256"
@@ -13,10 +19,6 @@ class Settings(BaseSettings):
     allowed_origins_value: str = Field(
         "http://localhost:3000", validation_alias="ALLOWED_ORIGINS"
     )
-
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
 
     @field_validator("debug", mode="before")
     @classmethod
