@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioApp - Nuevo pedido</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">BA</span>
+                <div><strong>BiblioApp</strong><span>Sistema de pedidos</span></div>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
+                <li><a href="index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
+                <li><a href="nuevo-pedido.html" class="active"><span class="nav-icon">NP</span>Nuevo pedido</a></li>
+                <li><a href="mis-prestamos.html" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">MP</span>Mis pedidos</a></li>
+                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Bibliotecario</a></li>
+                <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
+            </ul>
+            <div class="sidebar-footer">Completa el formulario para registrar una solicitud.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Formulario de pedido</h1>
+                    <p>Selecciona un libro y registra la solicitud para biblioteca.</p>
+                </div>
+                <a href="index.html" class="btn btn-secondary">Volver al catalogo</a>
+            </header>
+
+            <main class="page-content">
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Datos del pedido</h2>
+                            <p>Los campos marcados son necesarios para enviar la solicitud.</p>
+                        </div>
+                    </div>
+                    <form id="pedido-form">
+                        <div class="filters-grid">
+                            <div class="form-group">
+                                <label for="libro-select">Libro solicitado</label>
+                                <select id="libro-select" required>
+                                    <option value="">Cargando catalogo...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="solicitante">Solicitante</label>
+                                <input type="text" id="solicitante" placeholder="Nombre del solicitante">
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha-requerida">Fecha requerida</label>
+                                <input type="date" id="fecha-requerida">
+                            </div>
+                            <div class="form-group">
+                                <label for="carrera">Carrera o area</label>
+                                <input type="text" id="carrera" placeholder="Ej. Educacion">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="motivo">Motivo o comentario</label>
+                            <textarea id="motivo" placeholder="Indica brevemente el uso academico del material."></textarea>
+                            <span class="form-hint">El sistema registrara el prestamo con el libro seleccionado.</span>
+                        </div>
+                        <div class="form-actions">
+                            <a href="index.html" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Enviar pedido</button>
+                        </div>
+                    </form>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=20260620-redesign"></script>
+    <script src="js/auth.js?v=20260620-redesign"></script>
+    <script src="js/dom.js?v=20260620-redesign"></script>
+    <script src="js/pedido.js?v=20260620-redesign"></script>
+</body>
+</html>

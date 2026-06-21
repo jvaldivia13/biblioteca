@@ -3,51 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Catálogo de Libros</title>
+    <title>BiblioApp - Catalogo de Libros</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/layout.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-brand">
-                <h1>📚 BiblioApp</h1>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">BA</span>
+                <div>
+                    <strong>BiblioApp</strong>
+                    <span>Sistema de pedidos</span>
+                </div>
             </div>
-            <ul class="navbar-menu" id="navbar-menu">
-                <li><a href="index.html">Catálogo</a></li>
-                <li><a href="mis-prestamos.html" id="mis-prestamos-link" style="display:none;">Mis Préstamos</a></li>
-                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;">Admin</a></li>
-                <li><a href="login.html" id="login-link">Iniciar Sesión</a></li>
-                <li><button id="logout-btn" style="display:none;" class="btn btn-danger">Cerrar Sesión</button></li>
+
+            <ul class="sidebar-nav" id="navbar-menu">
+                <li><a href="dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
+                <li><a href="index.html" class="active"><span class="nav-icon">CA</span>Catalogo</a></li>
+                <li><a href="nuevo-pedido.html"><span class="nav-icon">NP</span>Nuevo pedido</a></li>
+                <li><a href="mis-prestamos.html" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">MP</span>Mis pedidos</a></li>
+                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Bibliotecario</a></li>
+                <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
+
+            <div class="sidebar-footer">Universidad / Biblioteca Central<br>Atencion academica y administrativa.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Catalogo de libros</h1>
+                    <p>Busca materiales, revisa disponibilidad y solicita prestamos.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="nuevo-pedido.html" class="btn btn-primary">Nuevo pedido</a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="filters-panel">
+                    <div class="panel-title">
+                        <h2>Busqueda y filtros</h2>
+                        <p>Filtra por titulo, autor, codigo, categoria, disponibilidad o tipo de material.</p>
+                    </div>
+                    <div class="search-form">
+                        <div class="form-group">
+                            <label for="search-input">Titulo, autor o codigo</label>
+                            <input type="text" id="search-input" placeholder="Ej. Cien anos de soledad">
+                        </div>
+                        <div class="form-group">
+                            <label for="category-select">Categoria</label>
+                            <select id="category-select">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="availability-filter">Disponibilidad</label>
+                            <select id="availability-filter">
+                                <option value="">Todas</option>
+                                <option value="disponible">Disponible</option>
+                                <option value="agotado">Sin stock</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="material-filter">Tipo</label>
+                            <select id="material-filter">
+                                <option value="">Todos</option>
+                                <option value="libro">Libro</option>
+                                <option value="tesis">Tesis</option>
+                                <option value="revista">Revista</option>
+                            </select>
+                        </div>
+                        <button id="search-btn" class="btn btn-primary">Buscar</button>
+                    </div>
+                </section>
+
+                <section class="books-section">
+                    <div class="page-header">
+                        <div>
+                            <h2>Resultados del catalogo</h2>
+                            <p>Materiales registrados en biblioteca.</p>
+                        </div>
+                    </div>
+                    <div id="books-container" class="books-grid">
+                        <div class="empty-state">Cargando libros...</div>
+                    </div>
+                    <div class="pagination" id="pagination"></div>
+                </section>
+            </main>
         </div>
-    </nav>
+    </div>
 
-    <main class="container">
-        <section class="search-section">
-            <h2>Búsqueda de Libros</h2>
-            <div class="search-form">
-                <input type="text" id="search-input" placeholder="Buscar por título o autor...">
-                <select id="category-select">
-                    <option value="">Todas las categorías</option>
-                </select>
-                <button id="search-btn" class="btn btn-primary">Buscar</button>
-            </div>
-        </section>
-
-        <section class="books-section">
-            <h2>Catálogo</h2>
-            <div id="books-container" class="books-grid">
-                <p>Cargando libros...</p>
-            </div>
-            <div class="pagination" id="pagination"></div>
-        </section>
-    </main>
-
-    <script src="js/api.js?v=20260620"></script>
-    <script src="js/auth.js?v=20260620"></script>
-    <script src="js/dom.js?v=20260620"></script>
-    <script src="js/libros.js?v=20260620"></script>
+    <script src="js/api.js?v=20260620-redesign"></script>
+    <script src="js/auth.js?v=20260620-redesign"></script>
+    <script src="js/dom.js?v=20260620-redesign"></script>
+    <script src="js/libros.js?v=20260620-redesign"></script>
 </body>
 </html>

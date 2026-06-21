@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BiblioApp - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">BA</span>
+                <div><strong>BiblioApp</strong><span>Sistema de pedidos</span></div>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html" class="active"><span class="nav-icon">IN</span>Inicio</a></li>
+                <li><a href="index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
+                <li><a href="nuevo-pedido.html"><span class="nav-icon">NP</span>Nuevo pedido</a></li>
+                <li><a href="mis-prestamos.html" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">MP</span>Mis pedidos</a></li>
+                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Bibliotecario</a></li>
+                <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
+            </ul>
+            <div class="sidebar-footer">Panel academico para gestion de solicitudes.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Dashboard principal</h1>
+                    <p>Resumen operativo de pedidos y accesos frecuentes.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="nuevo-pedido.html" class="btn btn-primary">Nuevo pedido</a>
+                    <a href="index.html" class="btn btn-secondary">Ver catalogo</a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="dashboard-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Pendientes</span>
+                        <strong class="stat-value" id="stat-pendientes">0</strong>
+                        <p>Solicitudes en revision.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Aprobados</span>
+                        <strong class="stat-value" id="stat-aprobados">0</strong>
+                        <p>Pedidos disponibles para atencion.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Rechazados</span>
+                        <strong class="stat-value" id="stat-rechazados">0</strong>
+                        <p>Solicitudes no aprobadas.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Entregados</span>
+                        <strong class="stat-value" id="stat-entregados">0</strong>
+                        <p>Prestamos o devoluciones registradas.</p>
+                    </article>
+                </section>
+
+                <section class="quick-actions-grid">
+                    <a href="nuevo-pedido.html" class="quick-action"><strong>Nuevo pedido</strong><span class="muted">Solicita un material.</span></a>
+                    <a href="mis-prestamos.html" class="quick-action"><strong>Mis pedidos</strong><span class="muted">Consulta tu historial.</span></a>
+                    <a href="index.html" class="quick-action"><strong>Catalogo</strong><span class="muted">Explora libros disponibles.</span></a>
+                    <a href="admin/prestamos.html" class="quick-action"><strong>Reportes</strong><span class="muted">Vista operativa para biblioteca.</span></a>
+                </section>
+
+                <section class="content-grid">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>Pedidos recientes</h2>
+                                <p>Ultimas solicitudes asociadas a tu cuenta.</p>
+                            </div>
+                        </div>
+                        <div id="dashboard-pedidos" class="table-wrap">
+                            <div class="empty-state">Inicia sesion para ver tus pedidos recientes.</div>
+                        </div>
+                    </div>
+                    <aside class="panel">
+                        <div class="panel-title">
+                            <h2>Estado del servicio</h2>
+                            <p>Atencion regular de solicitudes academicas.</p>
+                        </div>
+                        <div class="empty-state">
+                            <strong>Biblioteca Central</strong>
+                            <span>Horario referencial: lunes a viernes.</span>
+                        </div>
+                    </aside>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=20260620-redesign"></script>
+    <script src="js/auth.js?v=20260620-redesign"></script>
+    <script src="js/dom.js?v=20260620-redesign"></script>
+    <script src="js/dashboard.js?v=20260620-redesign"></script>
+</body>
+</html>

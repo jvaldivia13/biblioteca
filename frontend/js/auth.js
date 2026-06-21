@@ -53,14 +53,14 @@ function setupAuthUI() {
     if (isLoggedIn()) {
         if (loginLink) loginLink.style.display = "none";
         if (logoutBtn) {
-            logoutBtn.style.display = "block";
+            logoutBtn.style.display = "flex";
             logoutBtn.addEventListener("click", logout);
         }
-        if (misPrestamosLink) misPrestamosLink.style.display = "block";
-        if (adminLibrosLink && isAdmin()) adminLibrosLink.style.display = "block";
-        if (adminLink && isAdmin()) adminLink.style.display = "block";
+        if (misPrestamosLink) misPrestamosLink.style.display = "flex";
+        if (adminLibrosLink && isAdmin()) adminLibrosLink.style.display = "flex";
+        if (adminLink && isAdmin()) adminLink.style.display = "flex";
     } else {
-        if (loginLink) loginLink.style.display = "block";
+        if (loginLink) loginLink.style.display = "flex";
         if (logoutBtn) logoutBtn.style.display = "none";
         if (misPrestamosLink) misPrestamosLink.style.display = "none";
         if (adminLibrosLink) adminLibrosLink.style.display = "none";
@@ -76,7 +76,7 @@ if (document.querySelector("#login-form")) {
 
         try {
             await login(email, password);
-            window.location.href = "/index.html";
+            window.location.href = "/dashboard.html";
         } catch (error) {
             alert("Error: " + error.message);
         }
@@ -92,7 +92,7 @@ if (document.querySelector("#register-form")) {
 
         try {
             await register(nombre, email, password);
-            alert("Cuenta creada exitosamente. Inicia sesión ahora.");
+            alert("Cuenta creada exitosamente. Inicia sesion ahora.");
             window.location.href = "/login.html";
         } catch (error) {
             alert("Error: " + error.message);

@@ -3,38 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Administración de Préstamos</title>
+    <title>BiblioApp - Pedidos recibidos</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/layout.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-brand">
-                <h1>📚 BiblioApp - Admin</h1>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">BA</span>
+                <div><strong>BiblioApp</strong><span>Panel bibliotecario</span></div>
             </div>
-            <ul class="navbar-menu">
-                <li><a href="../index.html">Catálogo</a></li>
-                <li><a href="libros.html">Libros</a></li>
-                <li><a href="prestamos.html">Préstamos</a></li>
-                <li><a href="usuarios.html">Usuarios</a></li>
-                <li><button id="logout-btn" class="btn btn-danger">Cerrar Sesión</button></li>
+            <ul class="sidebar-nav">
+                <li><a href="../dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
+                <li><a href="../index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
+                <li><a href="libros.html"><span class="nav-icon">LB</span>Libros</a></li>
+                <li><a href="prestamos.html" class="active"><span class="nav-icon">PE</span>Pedidos</a></li>
+                <li><a href="usuarios.html"><span class="nav-icon">US</span>Usuarios</a></li>
+                <li><button id="logout-btn"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
+            <div class="sidebar-footer">Gestion rapida de solicitudes recibidas.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Pedidos recibidos</h1>
+                    <p>Aprueba, rechaza o registra entregas desde una vista clara.</p>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="filters-panel">
+                    <div class="filters-grid">
+                        <div class="form-group">
+                            <label for="admin-estado-filter">Estado</label>
+                            <select id="admin-estado-filter">
+                                <option value="">Todos</option>
+                                <option value="activo">Activo</option>
+                                <option value="devuelto">Devuelto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-fecha-filter">Fecha</label>
+                            <input type="date" id="admin-fecha-filter">
+                        </div>
+                        <button id="admin-filtrar-pedidos" class="btn btn-primary">Filtrar</button>
+                    </div>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Lista de pedidos</h2>
+                            <p>Solicitudes registradas por usuarios del sistema.</p>
+                        </div>
+                    </div>
+                    <div id="prestamos-container" class="prestamos-table">
+                        <div class="empty-state">Cargando pedidos...</div>
+                    </div>
+                </section>
+            </main>
         </div>
-    </nav>
+    </div>
 
-    <main class="container">
-        <section class="admin-section">
-            <h2>Gestión de Préstamos</h2>
-            <div id="prestamos-container" class="prestamos-table">
-                <p>Cargando préstamos...</p>
-            </div>
-        </section>
-    </main>
-
-    <script src="../js/api.js?v=20260620"></script>
-    <script src="../js/auth.js?v=20260620"></script>
-    <script src="../js/admin.js?v=20260620"></script>
+    <script src="../js/api.js?v=20260620-redesign"></script>
+    <script src="../js/auth.js?v=20260620-redesign"></script>
+    <script src="../js/dom.js?v=20260620-redesign"></script>
+    <script src="../js/admin.js?v=20260620-redesign"></script>
 </body>
 </html>
