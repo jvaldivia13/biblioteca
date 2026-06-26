@@ -11,9 +11,9 @@ services:
       - sqlite_data:/app/data
     environment:
       - DATABASE_URL=sqlite:////app/data/biblioapp.db
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
-      - DEBUG=${DEBUG}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-secret-change-me}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+      - DEBUG=${DEBUG:-false}
     restart: unless-stopped
 
   frontend:

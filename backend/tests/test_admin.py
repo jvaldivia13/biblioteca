@@ -40,6 +40,14 @@ def test_listar_usuarios(client: TestClient, usuario_admin):
     assert "items" in response.json()
 
 
+def test_lector_no_puede_listar_usuarios(client: TestClient, usuario_lector):
+    response = client.get(
+        "/api/v1/admin/usuarios",
+        headers=auth_header(usuario_lector),
+    )
+    assert response.status_code == 403
+
+
 def test_no_admin_rechaza_admin_endpoint(client: TestClient, usuario_lector):
     token = create_access_token(
         {
@@ -103,6 +111,18 @@ def test_admin_puede_cambiar_rol_de_otro_admin(client: TestClient, db, usuario_a
     )
     assert response.status_code == 200
     assert response.json()["role"] == "lector"
+
+
+def test_admin_puede_promover_lector_a_admin(
+    client: TestClient, usuario_admin, usuario_lector
+):
+    response = client.put(
+        f"/api/v1/admin/usuarios/{usuario_lector.id}/rol",
+        json={"role": "admin"},
+        headers=auth_header(usuario_admin),
+    )
+    assert response.status_code == 200
+    assert response.json()["role"] == "admin"
 
 
 def test_admin_no_puede_desactivarse_a_si_mismo(client: TestClient, usuario_admin):

@@ -242,6 +242,12 @@ table {
     background: var(--color-surface);
 }
 
+.table-select {
+    width: min(100%, 180px);
+    min-height: 38px;
+    padding: 0.48rem 0.65rem;
+}
+
 thead {
     color: var(--color-primary-900);
     background: var(--color-surface-muted);

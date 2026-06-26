@@ -183,6 +183,149 @@ async function marcarEntregado(prestamoId) {
     }
 }
 
+async function loadAdminUsuarios() {
+    const container = document.getElementById("usuarios-container");
+    if (!container) return;
+
+    clearChildren(container);
+    appendText(container, "div", "Cargando usuarios...", "empty-state");
+
+    try {
+        const response = await apiFetch("/admin/usuarios?limit=100");
+        displayAdminUsuarios(response.items);
+    } catch (error) {
+        clearChildren(container);
+        appendText(container, "div", `Error: ${error.message}`, "alert alert-danger");
+    }
+}
+
+function displayAdminUsuarios(usuarios) {
+    const container = document.getElementById("usuarios-container");
+    if (!container) return;
+
+    clearChildren(container);
+
+    if (usuarios.length === 0) {
+        appendText(container, "div", "No hay usuarios registrados.", "empty-state");
+        return;
+    }
+
+    const currentUser = getUserData();
+    const wrap = document.createElement("div");
+    wrap.className = "table-wrap";
+
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    ["Nombre", "Correo", "Rol", "Estado", "Fecha", "Acciones"].forEach((header) =>
+        appendText(headRow, "th", header)
+    );
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    usuarios.forEach((usuario) => {
+        const isCurrentUser = currentUser && currentUser.email === usuario.email;
+        const row = document.createElement("tr");
+
+        appendText(row, "td", usuario.nombre);
+        appendText(row, "td", usuario.email);
+
+        const roleCell = document.createElement("td");
+        const roleSelect = document.createElement("select");
+        roleSelect.className = "table-select";
+        roleSelect.disabled = isCurrentUser;
+        ["lector", "admin"].forEach((role) => {
+            const option = document.createElement("option");
+            option.value = role;
+            option.textContent = role === "admin" ? "Administrador" : "Lector";
+            option.selected = usuario.role === role;
+            roleSelect.appendChild(option);
+        });
+        roleSelect.addEventListener("change", () =>
+            cambiarRolUsuario(usuario.id, roleSelect.value)
+        );
+        roleCell.appendChild(roleSelect);
+        row.appendChild(roleCell);
+
+        const statusCell = document.createElement("td");
+        appendText(
+            statusCell,
+            "span",
+            usuario.activo ? "Activo" : "Inactivo",
+            usuario.activo ? "badge badge-success" : "badge badge-danger"
+        );
+        row.appendChild(statusCell);
+
+        appendText(row, "td", formatDate(usuario.created_at));
+
+        const actions = document.createElement("td");
+        const nextStatus = !usuario.activo;
+        appendButton(
+            actions,
+            usuario.activo ? "Desactivar" : "Activar",
+            usuario.activo ? "btn btn-warning" : "btn btn-success",
+            () => cambiarEstadoUsuario(usuario.id, nextStatus)
+        ).disabled = isCurrentUser;
+
+        if (isCurrentUser) {
+            appendText(actions, "span", " Cuenta actual", "muted");
+        }
+
+        row.appendChild(actions);
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    container.appendChild(wrap);
+}
+
+async function cambiarRolUsuario(usuarioId, role) {
+    const label = role === "admin" ? "administrador" : "lector";
+    if (!confirm(`Cambiar rol del usuario a ${label}?`)) {
+        loadAdminUsuarios();
+        return;
+    }
+
+    try {
+        await apiFetch(`/admin/usuarios/${usuarioId}/rol`, {
+            method: "PUT",
+            body: JSON.stringify({ role }),
+        });
+        alert("Rol actualizado correctamente");
+        loadAdminUsuarios();
+    } catch (error) {
+        alert("Error: " + error.message);
+        loadAdminUsuarios();
+    }
+}
+
+async function cambiarEstadoUsuario(usuarioId, activo) {
+    const action = activo ? "activar" : "desactivar";
+    if (!confirm(`Estas seguro de ${action} este usuario?`)) return;
+
+    try {
+        await apiFetch(`/admin/usuarios/${usuarioId}/estado`, {
+            method: "PUT",
+            body: JSON.stringify({ activo }),
+        });
+        alert("Estado actualizado correctamente");
+        loadAdminUsuarios();
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+}
+
+function formatDate(value) {
+    if (!value) return "";
+    return new Date(value).toLocaleDateString("es-PE", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     if (!isAdmin()) {
         window.location.href = "../index.html";
@@ -202,5 +345,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (document.getElementById("prestamos-container")) {
         loadAdminPrestamos();
+    }
+
+    const refreshButton = document.getElementById("usuarios-refresh");
+    if (refreshButton) refreshButton.addEventListener("click", loadAdminUsuarios);
+
+    if (document.getElementById("usuarios-container")) {
+        loadAdminUsuarios();
     }
 });
